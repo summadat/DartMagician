@@ -15,7 +15,7 @@ public class Animation extends Sprite {
     double time = 0;
     double last = System.nanoTime() / 1000000000.0;
     double elapsed = 0;
-    boolean paused = false;
+    boolean paused = true;
 
     public Animation(BufferedImage[] frames, double length) {
         images = frames;

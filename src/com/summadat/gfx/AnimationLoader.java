@@ -9,7 +9,9 @@ import com.summadat.world.World;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 
 /**
  * Created by Noah on 24-Sep-17.
@@ -24,6 +26,7 @@ public class AnimationLoader {
             System.out.println("failed to load black block!");
         }
     }
+
 
     public EntityContainer loadAnimations(String url) {
         Animation[] sprites;
@@ -63,9 +66,9 @@ public class AnimationLoader {
                     } else {
                         System.out.println("fukk");
                     }
-                    Entity e = new Entity(sprites, new Location(((int)(Math.random() * Map.width) * 32), ((int)(Math.random() * (Map.height)) * 32)));
-                    entities.add(e);
-                    num++;
+                        Entity e = new Entity(sprites, new Location(((int)(Math.random() * Map.width) * 32), ((int)(Math.random() * Map.height) * 32)));
+                        entities.add(e);
+                        num++;
                 }
             }
             System.out.println("loaded " + num);

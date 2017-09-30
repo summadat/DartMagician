@@ -4,12 +4,15 @@ import com.summadat.GamePanel;
 import com.summadat.containers.EntityContainer;
 import com.summadat.gfx.AnimationLoader;
 import com.summadat.gfx.Camera;
+import com.summadat.gfx.Location;
 import com.summadat.gfx.Sprite;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 
 /**
  * Created by Noah on 23-Sep-17.
@@ -17,6 +20,7 @@ import java.io.File;
 public class World {
 
     EntityContainer entities;
+    public EntityContainer liveEntities;
     Entity player;
     Sprite[] sprites;
     public static Map map;
@@ -26,7 +30,7 @@ public class World {
     public void draw(Graphics2D graphics, Camera camera) {
         graphics.fillRect(0, 0, GamePanel.WIDTH, GamePanel.HEIGHT);
         map.draw(graphics, camera);
-        entities.draw(graphics, camera);
+        liveEntities.draw(graphics, camera);
         if (player != null)
             player.draw(graphics, camera);
     }
@@ -48,21 +52,18 @@ public class World {
         entities.add(loader.loadAnimations("res/doggos.png"));
         entities.add(loader.loadAnimations("res/knights.png"));
 
-
         System.out.println(entities.num);
-
-        newPlayer();
-
     }
 
     public void generateMap() {
-        map = Map.load("maps/default.map");
+        map = Map.load("maps/_default_.map");
     }
 
     public Entity newPlayer() {
-        playerID = (int)(Math.random() * entities.num);
+        player = liveEntities.get((int)(Math.random() * liveEntities.num));
+        playerID = player.id;
         System.out.println("playerID = " + playerID);
-        return entities.get(playerID);
+        return liveEntities.get(playerID);
     }
 
     public Entity getPlayer() {
@@ -70,7 +71,7 @@ public class World {
             return player;
 
         return newPlayer(); */
-        return entities.get(playerID);
+        return liveEntities.get(playerID);
     }
 
     public EntityContainer getEntities() {
@@ -79,7 +80,7 @@ public class World {
 
     public void update() {
         getPlayer().update();
-        entities.update();
+        liveEntities.update();
     }
 
     public void loadTiles(String s) {

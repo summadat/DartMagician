@@ -21,7 +21,7 @@ public class Entity {
 
     private int speedX = 0;
     private int speedY = 0;
-    private static int NUM = 0;
+    public static int NUM = 0;
     public int id = 0;
     boolean col = false;
 
@@ -38,6 +38,13 @@ public class Entity {
 
     public void setAnimation(Animation[] s) {
         sprites = s;
+    }
+    public Animation[] getAnimations() {
+        return sprites;
+    }
+
+    public void setLocation(Location l) {
+        location = l;
     }
 
     public int calculateX(Camera c) {
@@ -81,6 +88,8 @@ public class Entity {
 
         if (speedX != 0 || speedY != 0) {
 
+            sprites[direction].unpause();
+
             if (speedY > 0) {
 
                 direction = UP;
@@ -102,11 +111,10 @@ public class Entity {
                 speedY = 0;
             }
 
-            sprites[direction].unpause();
-
             if (col) {
                 speedX = 0;
                 speedY = 0;
+                sprites[direction].pause();
             }
 
             if (location.getX() + speedX > (Map.width - 1) * 32) {

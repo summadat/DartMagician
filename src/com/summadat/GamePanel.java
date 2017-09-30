@@ -1,7 +1,9 @@
 package com.summadat;
 
+import com.summadat.containers.EntityContainer;
 import com.summadat.gfx.Camera;
 import com.summadat.gfx.Location;
+import com.summadat.world.Entity;
 import com.summadat.world.World;
 
 import javax.swing.*;
@@ -11,6 +13,8 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
+import java.io.BufferedReader;
+import java.io.FileReader;
 
 /**
  * Created by Noah on 19-Sep-17.
@@ -19,7 +23,6 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 
     public static final int WIDTH = 640;
     public static final int HEIGHT = 480;
-
 
     private Camera camera;
 
@@ -47,6 +50,43 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
         world = new World();
         world.loadTiles("res/sheet.png");
         world.generateMap();
+        Entity.NUM = 0;
+        world.liveEntities = loadEntities("entities/_entities-default_7.enf");
+        world.newPlayer();
+    }
+
+    public EntityContainer loadEntities(String s) {
+
+        EntityContainer cont = new EntityContainer();
+        try {
+
+            BufferedReader reader = new BufferedReader(new FileReader(s));
+
+            String nam = reader.readLine();
+
+            String in;
+
+            while ((in = reader.readLine()) != "EOF") {
+                System.out.println(in);
+
+                String[] data = in.split(":");
+
+                int x = Integer.parseInt(data[0]);
+                int y = Integer.parseInt(data[1]);
+                int id = 0;
+                id = Integer.parseInt(data[2]);
+
+                if (id != 0) {
+                    Entity e = new Entity(world.getEntities().get(id).getAnimations());
+                    e.setLocation(new Location(x * 32, y * 32));
+
+                    cont.add(e);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return cont;
     }
 
     public void start() {
@@ -175,15 +215,6 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
             world.getPlayer().setSpeedY(2);
             world.getPlayer().setSpeedX(0);
         }
-        if (e.getKeyCode() == KeyEvent.VK_A) {
-            world.getEntities().get(1).setSpeedX(-3);
-        } else if (e.getKeyCode() == KeyEvent.VK_D) {
-            world.getEntities().get(1).setSpeedX(3);
-        } else if (e.getKeyCode() == KeyEvent.VK_W) {
-            world.getEntities().get(1).setSpeedY(-3);
-        } else if (e.getKeyCode() == KeyEvent.VK_S) {
-            world.getEntities().get(1).setSpeedY(3);
-        }
         if (e.getKeyCode() == KeyEvent.VK_M) {
             world.newPlayer();
         }
@@ -192,10 +223,8 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
     public void keyReleased(KeyEvent e) {
           if (e.getKeyCode() == KeyEvent.VK_A || e.getKeyCode() == KeyEvent.VK_LEFT || e.getKeyCode() == KeyEvent.VK_D || e.getKeyCode() == KeyEvent.VK_RIGHT) {
               world.getPlayer().setSpeedX(0);
-              world.getEntities().get(1).setSpeedX(0);
         } else if (e.getKeyCode() == KeyEvent.VK_W || e.getKeyCode() == KeyEvent.VK_UP || e.getKeyCode() == KeyEvent.VK_S || e.getKeyCode() == KeyEvent.VK_DOWN) {
               world.getPlayer().setSpeedY(0);
-              world.getEntities().get(1).setSpeedY(0);
         }
     }
 
